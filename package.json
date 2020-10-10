@@ -58,17 +58,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.13.0",
+    "react-router-dom": "^5.2.0",
     "styled-components": "^5.2.0"
-  },
-  "jest": {
-    "coverageThreshold": {
-      "global": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      }
-    }
   },
   "pre-commit": [
     "coverage",

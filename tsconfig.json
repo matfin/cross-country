@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
+    "paths": {
+      "components/*": ["components/*"],
+      "models/*": ["models/*"],
+      "styles/*": ["styles/*"],
+      "utils/*": ["utils/*"],
+    },
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "target": "esnext",
     "module": "commonjs",
     "lib": ["ESNext", "dom"],
