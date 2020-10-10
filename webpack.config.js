@@ -9,7 +9,10 @@ module.exports = (env, { mode }) => ({
   },
   resolve: {
     alias: {
-      'react-dom': '@hot-loader/react-dom'
+      'react-dom': '@hot-loader/react-dom',
+      'components': path.resolve(__dirname, 'src/components'),
+      'models': path.resolve(__dirname, 'src/models'),
+      'styles': path.resolve(__dirname, 'src/styles'),
     },
     extensions: ['.ts', '.tsx', '.js']
   },
