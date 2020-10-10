@@ -3,7 +3,7 @@ import { Container } from './sidebar.css';
 
 export interface Props {
   className?: string;
-  children?: JSX.Element;
+  children?: JSX.Element | JSX.Element[];
 }
 
 const Sidebar = ({ children, className }: Props): JSX.Element => {

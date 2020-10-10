@@ -8,7 +8,7 @@ export const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr 2fr;
   grid-template-rows: 1fr;
-  grid-template-areas: 'sidebar' 'map';
+  grid-template-areas: 'sidebar map';
 `;
 
 export const Sidebar = styled(SidebarComponent)`
