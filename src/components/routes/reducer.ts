@@ -7,10 +7,10 @@ export const initialState: RoutesState = {
   routes: [],
 };
 
-const reducer = (state: RoutesState, { payload, type }: ReduxAction): RoutesState => {
+const reducer = (state: RoutesState = initialState, { payload, type }: ReduxAction): RoutesState => {
   switch (type) {
     case ActionTypes.ADD_ROUTE: {
-      const { route } = payload;
+      const route = payload;
       const { routes } = state;
 
       return {
@@ -18,8 +18,9 @@ const reducer = (state: RoutesState, { payload, type }: ReduxAction): RoutesStat
         routes: [...routes, route],
       };
     }
+
     case ActionTypes.DELETE_ROUTE: {
-      const { route } = payload;
+      const route = payload;
       const { routes } = state;
       const filteredRoutes: Route[] = routes.filter(({ id }: Route) => id !== route.id);
 
@@ -28,6 +29,7 @@ const reducer = (state: RoutesState, { payload, type }: ReduxAction): RoutesStat
         routes: filteredRoutes,
       };
     }
+
     default: {
       return state;
     }
