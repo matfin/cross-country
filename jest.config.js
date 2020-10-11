@@ -14,7 +14,9 @@ module.exports = {
     }
   },
   coveragePathIgnorePatterns: [
-    'node_modules'
+    'node_modules',
+    'src/utils/testutils.tsx',
+    'src/components/routes/connectedRoutes.tsx',
   ],
   moduleDirectories: ['node_modules', 'src'],
   moduleNameMapper: {
