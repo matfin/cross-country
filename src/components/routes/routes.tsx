@@ -1,38 +1,46 @@
-import React, { useEffect } from 'react';
-import { v4 as uuid } from 'uuid';
+import React from 'react';
 import { Route } from 'models';
 import RouteTile from 'components/routetile/routetile';
-import { Container, Map, Sidebar } from './routes.css';
+import { AddRoute, Button, Container, Input, Map, RouteList, Sidebar } from './routes.css';
 
 export interface Props {
-  addRoute(route: Route): void;
+  addRoute(): void;
   deleteRoute(route: Route): void;
+  updateNewRouteTitle(title: string): void;
 
   className?: string;
   error?: any;
+  newRouteTitle: string;
   pending: boolean;
   routes: Route[];
 }
 
-const Routes = ({ addRoute, className, routes }: Props): JSX.Element => {
-  useEffect((): void => {
-    const dummy: Route = {
-      dateCreated: new Date(),
-      id: uuid(),
-      note: 'Test note',
-      slug: 'test-route',
-      title: 'Test Route',
-    };
-
-    addRoute(dummy);
-  }, []);
+const Routes = ({
+  addRoute,
+  className,
+  deleteRoute,
+  newRouteTitle,
+  routes,
+  updateNewRouteTitle,
+}: Props): JSX.Element => {
+  const onInputChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>): void => {
+    updateNewRouteTitle(value);
+  };
 
   return (
     <Container className={className}>
       <Sidebar>
-        {routes?.map((item: Route) => (
-          <RouteTile key={item.id} route={item} onClickDelete={console.log} />
-        ))}
+        <RouteList>
+          {routes?.map((item: Route) => (
+            <RouteTile key={item.id} route={item} onClickDelete={deleteRoute} />
+          ))}
+        </RouteList>
+        <AddRoute>
+          <Input onChange={onInputChange} placeholder="Add a new route" value={newRouteTitle} />
+          <Button onClick={addRoute}>
+            <span>Add</span>
+          </Button>
+        </AddRoute>
       </Sidebar>
       <Map />
     </Container>

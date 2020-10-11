@@ -3,7 +3,6 @@ import ActionTypes from './actionTypes';
 
 interface AddRoute {
   type: typeof ActionTypes.ADD_ROUTE;
-  payload: Route;
 }
 
 interface DeleteRoute {
@@ -11,14 +10,23 @@ interface DeleteRoute {
   payload: Route;
 }
 
-export type RoutesActionTypes = AddRoute | DeleteRoute;
+interface UpdateNewRouteTitle {
+  type: typeof ActionTypes.UPDATE_NEW_ROUTE_TITLE;
+  payload: string;
+}
 
-export const addRoute = (route: Route): RoutesActionTypes => ({
+export type RoutesActionTypes = AddRoute | DeleteRoute | UpdateNewRouteTitle;
+
+export const addRoute = (): RoutesActionTypes => ({
   type: ActionTypes.ADD_ROUTE,
-  payload: route,
 });
 
 export const deleteRoute = (route: Route): RoutesActionTypes => ({
   type: ActionTypes.DELETE_ROUTE,
   payload: route,
+});
+
+export const updateNewRouteTitle = (title: string): RoutesActionTypes => ({
+  type: ActionTypes.UPDATE_NEW_ROUTE_TITLE,
+  payload: title,
 });

@@ -21,6 +21,7 @@ export interface ReduxAction {
 
 export interface RoutesState {
   error: any;
+  newRouteTitle: string;
   pending: boolean;
   routes: Route[];
 }

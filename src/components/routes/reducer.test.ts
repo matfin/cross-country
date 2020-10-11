@@ -12,16 +12,30 @@ describe('routes reducer test', (): void => {
   };
 
   it('sets the state when adding a route', (): void => {
-    const state = reducer(undefined, {
-      type: ActionTypes.ADD_ROUTE,
-      payload: route,
-    });
+    const state = reducer(
+      {
+        ...initialState,
+        newRouteTitle: 'Test Route',
+      },
+      {
+        type: ActionTypes.ADD_ROUTE,
+      },
+    );
     const check = {
       ...initialState,
       routes: [route],
     };
 
-    expect(state).toEqual(check);
+    expect(check).toMatchObject({
+      ...state,
+      routes: [
+        {
+          ...route,
+          dateCreated: expect.any(Date),
+          id: expect.any(String),
+        },
+      ],
+    });
   });
 
   it('sets the state when deleting a route', (): void => {
@@ -41,5 +55,18 @@ describe('routes reducer test', (): void => {
     );
 
     expect(state.routes).toEqual([route]);
+  });
+
+  it('sets the state when updating a route title', (): void => {
+    const state = reducer(initialState, {
+      payload: 'A new route',
+      type: ActionTypes.UPDATE_NEW_ROUTE_TITLE,
+    });
+    const check = {
+      ...initialState,
+      newRouteTitle: 'A new route',
+    };
+
+    expect(state).toEqual(check);
   });
 });
