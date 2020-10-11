@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Container, Map, Sidebar } from './routes.css';
 
 interface Props {
@@ -6,10 +6,6 @@ interface Props {
 }
 
 const Routes = ({ className }: Props): JSX.Element => {
-  useEffect((): void => {
-    console.info('Routes component loaded!');
-  }, []);
-
   return (
     <Container className={className}>
       <Sidebar>

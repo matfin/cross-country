@@ -8,8 +8,8 @@ export const colours: Colours = {
 };
 
 export const fontSizes: FontSizes = {
-  heading: 1.5,
-  normal: 1.0,
+  heading: 2.0,
+  normal: 1.25,
 };
 
 export const fontFamily = 'Gill Sans,Gill Sans MT,Calibri,sans-serif';
