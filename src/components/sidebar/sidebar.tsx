@@ -7,10 +7,6 @@ export interface Props {
 }
 
 const Sidebar = ({ children, className }: Props): JSX.Element => {
-  useEffect((): void => {
-    console.log('Sidebar has been rendered!');
-  }, []);
-
   return <Container className={className}>{children}</Container>;
 };
 

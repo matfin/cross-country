@@ -16,6 +16,12 @@ export type FontSizes = {
   normal: number;
 };
 
+export type FontWeights = {
+  bold: number;
+  normal: number;
+  light: number;
+};
+
 export type AppState = RoutesState;
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, unknown, Action<string>>;

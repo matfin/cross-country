@@ -4,6 +4,9 @@ import { renderWithRouter } from 'utils/testutils';
 import { Route } from 'models';
 import Routes, { Props } from './routes';
 
+// eslint-disable-next-line react/display-name
+jest.mock('components/map/connectedMap', () => () => <></>);
+
 describe('Routes tests', (): void => {
   const routes: Route[] = [
     {

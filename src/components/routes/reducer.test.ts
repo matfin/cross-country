@@ -1,4 +1,4 @@
-import { Route } from 'models';
+import { Route, RoutesState } from 'models';
 import ActionTypes from './actionTypes';
 import reducer, { initialState } from './reducer';
 
@@ -12,7 +12,7 @@ describe('routes reducer test', (): void => {
   };
 
   it('sets the state when adding a route', (): void => {
-    const state = reducer(
+    const state: RoutesState = reducer(
       {
         ...initialState,
         newRouteTitle: 'Test Route',
@@ -43,7 +43,7 @@ describe('routes reducer test', (): void => {
       ...route,
       id: '5678',
     };
-    const state = reducer(
+    const state: RoutesState = reducer(
       {
         ...initialState,
         routes: [route, routeToDelete],
@@ -58,7 +58,7 @@ describe('routes reducer test', (): void => {
   });
 
   it('sets the state when updating a route title', (): void => {
-    const state = reducer(initialState, {
+    const state: RoutesState = reducer(initialState, {
       payload: 'A new route',
       type: ActionTypes.UPDATE_NEW_ROUTE_TITLE,
     });
@@ -68,5 +68,59 @@ describe('routes reducer test', (): void => {
     };
 
     expect(state).toEqual(check);
+  });
+
+  it('sets the current route from a slug', (): void => {
+    const state: RoutesState = reducer(
+      {
+        ...initialState,
+        routes: [route],
+      },
+      {
+        type: ActionTypes.SET_CURRENT_ROUTE,
+        payload: 'test-route',
+      },
+    );
+    const check: RoutesState = {
+      ...initialState,
+      routes: [route],
+      currentRoute: route,
+    };
+
+    expect(state).toEqual(check);
+  });
+
+  it('sets the current route to null for an unknown slug', (): void => {
+    const state: RoutesState = reducer(
+      {
+        ...initialState,
+        routes: [route],
+      },
+      {
+        type: ActionTypes.SET_CURRENT_ROUTE,
+        payload: 'unknown-route',
+      },
+    );
+    const check: RoutesState = {
+      ...initialState,
+      routes: [route],
+      currentRoute: null,
+    };
+
+    expect(state).toEqual(check);
+  });
+
+  it('resets the current route', (): void => {
+    const state: RoutesState = reducer(
+      {
+        ...initialState,
+        currentRoute: route,
+      },
+      {
+        type: ActionTypes.RESET_CURRENT_ROUTE,
+      },
+    );
+
+    expect(state).toEqual(initialState);
   });
 });

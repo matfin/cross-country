@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route } from 'models';
 import RouteTile from 'components/routetile/routetile';
-import { AddRoute, Button, Container, Input, Map, RouteList, Sidebar } from './routes.css';
+import { AddRoute, Button, Container, Heading, Input, Map, RouteList, Sidebar } from './routes.css';
 
 export interface Props {
   addRoute(): void;
@@ -30,6 +30,7 @@ const Routes = ({
   return (
     <Container className={className}>
       <Sidebar>
+        <Heading>Your Routes</Heading>
         <RouteList>
           {routes?.map((item: Route) => (
             <RouteTile key={item.id} route={item} onClickDelete={deleteRoute} />
