@@ -1,8 +1,11 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Route, RoutesState, ReduxAction } from 'models';
+import { slugify } from 'utils';
 import ActionTypes from './actionTypes';
 
 export const initialState: RoutesState = {
   error: null,
+  newRouteTitle: '',
   pending: false,
   routes: [],
 };
@@ -10,12 +13,19 @@ export const initialState: RoutesState = {
 const reducer = (state: RoutesState = initialState, { payload, type }: ReduxAction): RoutesState => {
   switch (type) {
     case ActionTypes.ADD_ROUTE: {
-      const route = payload;
+      const { newRouteTitle } = state;
+      const newRoute: Route = {
+        dateCreated: new Date(),
+        id: uuidv4(),
+        slug: slugify(newRouteTitle),
+        title: newRouteTitle,
+      };
       const { routes } = state;
 
       return {
         ...state,
-        routes: [...routes, route],
+        newRouteTitle: '',
+        routes: [...routes, newRoute],
       };
     }
 
@@ -27,6 +37,15 @@ const reducer = (state: RoutesState = initialState, { payload, type }: ReduxActi
       return {
         ...state,
         routes: filteredRoutes,
+      };
+    }
+
+    case ActionTypes.UPDATE_NEW_ROUTE_TITLE: {
+      const newRouteTitle: string = payload;
+
+      return {
+        ...state,
+        newRouteTitle,
       };
     }
 

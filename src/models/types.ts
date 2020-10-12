@@ -6,6 +6,8 @@ export type Colours = {
   primary: string;
   secondary: string;
   buttonPrimary: string;
+  buttonHover: string;
+  buttonDisabled: string;
   iconPrimary: string;
 };
 
