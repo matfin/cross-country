@@ -1,4 +1,4 @@
-import { Colours, FontSizes } from 'models';
+import { Colours, FontSizes, FontWeights } from 'models';
 
 export const colours: Colours = {
   primary: 'rgb(255, 255, 255)',
@@ -12,6 +12,12 @@ export const colours: Colours = {
 export const fontSizes: FontSizes = {
   heading: 2.0,
   normal: 1.25,
+};
+
+export const fontWeights: FontWeights = {
+  bold: 600,
+  normal: 400,
+  light: 200,
 };
 
 export const fontFamily = 'Gill Sans,Gill Sans MT,Calibri,sans-serif';

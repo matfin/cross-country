@@ -1,7 +1,12 @@
-export interface Waypoint {
+export interface MapPosition {
   lat: number;
-  lon: number;
+  lng: number;
+}
+
+export interface Waypoint {
+  id: string;
   note?: string;
+  position: MapPosition;
 }
 
 export interface Route {
@@ -19,9 +24,18 @@ export interface ReduxAction {
   type: string;
 }
 
+export interface PlannerState {
+  waypoints: Waypoint[];
+}
+
 export interface RoutesState {
+  currentRoute: Route | null;
   error: any;
   newRouteTitle: string;
   pending: boolean;
   routes: Route[];
+}
+
+export interface MapState {
+  apiLoaded: boolean;
 }

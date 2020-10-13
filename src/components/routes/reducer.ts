@@ -4,6 +4,7 @@ import { slugify } from 'utils';
 import ActionTypes from './actionTypes';
 
 export const initialState: RoutesState = {
+  currentRoute: null,
   error: null,
   newRouteTitle: '',
   pending: false,
@@ -37,6 +38,24 @@ const reducer = (state: RoutesState = initialState, { payload, type }: ReduxActi
       return {
         ...state,
         routes: filteredRoutes,
+      };
+    }
+
+    case ActionTypes.RESET_CURRENT_ROUTE: {
+      return {
+        ...state,
+        currentRoute: null,
+      };
+    }
+
+    case ActionTypes.SET_CURRENT_ROUTE: {
+      const slug = payload;
+      const { routes } = state;
+      const foundRoute: Route | undefined = routes.find((route: Route) => route.slug === slug);
+
+      return {
+        ...state,
+        currentRoute: foundRoute ?? null,
       };
     }
 

@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from 'styles';
 import createStore from './store';
-import Planner from 'components/planner/planner';
+import Planner from 'components/planner/connectedPlanner';
 import Routes from 'components/routes/connectedRoutes';
 
 const store: Store = createStore();

@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@testing-library/react": "^11.0.4",
+    "@types/googlemaps": "^3.40.0",
     "@types/uuid": "^8.3.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

@@ -2,7 +2,7 @@ import React from 'react';
 import { Store } from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureMockStore, { MockStoreCreator } from 'redux-mock-store';
-import { render, RenderResult } from '@testing-library/react';
+import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { RoutesState } from 'models';
 import { initialState } from 'components/routes/reducer';
 
