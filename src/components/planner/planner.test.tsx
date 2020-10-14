@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import * as reactRouterDom from 'react-router-dom';
 import * as googleServices from 'services/googlemaps';
-import { Route, Waypoint } from 'models';
+import { MarkerUpdatedDetail, Route, Waypoint } from 'models';
 import Planner from './planner';
 
 jest.mock('react-router-dom', (): any => ({
@@ -22,6 +22,7 @@ describe('Planner tests', (): void => {
     deleteWaypoint: jest.fn(),
     resetCurrentRoute: jest.fn(),
     setCurrentRoute: jest.fn(),
+    updateWaypoint: jest.fn(),
   };
   const mockedMarker = {
     setMap: jest.fn(),
@@ -43,11 +44,13 @@ describe('Planner tests', (): void => {
     const waypoints: Waypoint[] = [
       {
         id: '1234',
+        dateUpdated: new Date('1982-04-26'),
         note: 'Test Waypoint One',
         marker: mockedMarker,
       },
       {
         id: '5678',
+        dateUpdated: new Date('1983-05-27'),
         marker: mockedMarker,
       },
     ];
@@ -114,6 +117,31 @@ describe('Planner tests', (): void => {
       new CustomEvent<google.maps.Marker>('map:markerAdded', { detail: mockedMarker }),
     );
     expect(spyAddWaypoint).toHaveBeenCalledWith(mockedMarker);
+
+    // cleanup
+    spyUseParams.mockRestore();
+  });
+
+  it('calls to update a waypoint', (): void => {
+    // given
+    const coordinate: google.maps.LatLngLiteral = {
+      lat: 23.0,
+      lng: 22.0,
+    };
+    const uuid = '123';
+    const spyUseParams = jest.spyOn(reactRouterDom, 'useParams').mockReturnValue({ slug: 'test' });
+    const spyUpdateWaypoint = jest.fn();
+
+    render(<Planner {...defaultProps} updateWaypoint={spyUpdateWaypoint} />);
+
+    // then
+    fireEvent(
+      window,
+      new CustomEvent<MarkerUpdatedDetail>('map:markerUpdated', {
+        detail: { coordinate, uuid },
+      }),
+    );
+    expect(spyUpdateWaypoint).toHaveBeenCalledWith(coordinate, uuid);
 
     // cleanup
     spyUseParams.mockRestore();

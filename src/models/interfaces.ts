@@ -4,9 +4,15 @@ export interface MapPosition {
 }
 
 export interface Waypoint {
+  dateUpdated: Date;
   id: string;
   note?: string;
   marker: google.maps.Marker;
+}
+
+export interface MarkerUpdatedDetail {
+  coordinate: google.maps.LatLngLiteral;
+  uuid: string;
 }
 
 export interface Route {

@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { Waypoint } from 'models';
 import { resetCurrentRoute, setCurrentRoute, RoutesActionTypes } from 'components/routes/actions';
-import { addWaypoint, deleteWaypoint } from './actions';
+import { addWaypoint, deleteWaypoint, updateWaypoint } from './actions';
 import Planner, { Props } from './planner';
 
 const mapStateToProps = (state: any) => ({
@@ -24,6 +24,9 @@ const mapDispatchToProps = (dispatch: Dispatch<RoutesActionTypes>) => ({
   },
   setCurrentRoute: (slug: string): void => {
     dispatch<any>(setCurrentRoute(slug));
+  },
+  updateWaypoint: (coordinate: google.maps.LatLngLiteral, uuid: string): void => {
+    dispatch<any>(updateWaypoint(coordinate, uuid));
   },
 });
 
