@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom';
 import { MarkerUpdatedDetail, Route, Waypoint } from 'models';
 import { useMarkerAdded, useMarkerUpdated } from 'hooks/useMap';
 import { deleteMarkerFromMap } from 'services/googlemaps';
+import { downloadGPX } from 'services/gpx';
 import WaypointTile from 'components/waypointTile/waypointTile';
-import { Container, Heading, Map, Sidebar, WaypointList } from './planner.css';
+import { Button, Container, Heading, Map, Message, Sidebar, WaypointList } from './planner.css';
 
 export interface Props {
   className?: string;
@@ -30,12 +31,14 @@ const Planner = ({
   waypoints,
 }: Props): JSX.Element => {
   const { slug } = useParams<{ slug?: string }>();
+  const hasWaypoints: boolean = waypoints.length > 0;
   const onClickDeleteWaypoint = (waypoint: Waypoint): void => {
     const { marker } = waypoint;
 
     deleteMarkerFromMap(marker);
     deleteWaypoint(waypoint);
   };
+  const onClickDownload = (): void => downloadGPX(route, waypoints);
 
   useEffect((): (() => void) => {
     if (slug) {
@@ -61,6 +64,11 @@ const Planner = ({
     <Container className={className}>
       <Sidebar>
         <Heading>{route?.title}</Heading>
+        {!hasWaypoints ? (
+          <Message data-testid="message">It looks like you have no waypoints. Click the map to add some!</Message>
+        ) : (
+          <></>
+        )}
         <WaypointList>
           {waypoints.map((waypoint: Waypoint, idx: number) => (
             <WaypointTile
@@ -70,6 +78,7 @@ const Planner = ({
             />
           ))}
         </WaypointList>
+        {hasWaypoints ? <Button onClick={onClickDownload}>Download Route</Button> : <></>}
       </Sidebar>
       <Map canEdit={true} waypoints={waypoints} />
     </Container>

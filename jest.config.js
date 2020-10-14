@@ -19,7 +19,7 @@ module.exports = {
     'src/components/map/connectedMap.tsx',
     'src/components/planner/connectedPlanner.tsx',
     'src/components/routes/connectedRoutes.tsx',
-    'src/services/googlemaps.ts'
+    'src/services/'
   ],
   moduleDirectories: ['node_modules', 'src'],
   moduleNameMapper: {
