@@ -1,8 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import * as reactRouterDom from 'react-router-dom';
-import { renderWithRouter } from 'utils/testutils';
-import { MapPosition, Route } from 'models';
+import { MapPosition, Route, Waypoint } from 'models';
 import Planner from './planner';
 
 jest.mock('react-router-dom', (): any => ({
@@ -17,6 +16,7 @@ describe('Planner tests', (): void => {
     route: null,
     waypoints: [],
     addWaypoint: jest.fn(),
+    deleteWaypoint: jest.fn(),
     resetCurrentRoute: jest.fn(),
     setCurrentRoute: jest.fn(),
   };
@@ -28,6 +28,39 @@ describe('Planner tests', (): void => {
 
     // then
     expect(getByText('Test Route')).toBeTruthy();
+  });
+
+  it('renders waypoints and deletes them on click of delete', (): void => {
+    // given
+    const spyDeleteWaypoint = jest.fn();
+    const waypoints: Waypoint[] = [
+      {
+        id: '1234',
+        note: 'Test Waypoint One',
+        position: {
+          lat: 1.0,
+          lng: 2.0,
+        },
+      },
+      {
+        id: '5678',
+        position: {
+          lat: 1.0,
+          lng: 2.0,
+        },
+      },
+    ];
+    const { getAllByTestId, getByText } = render(
+      <Planner {...defaultProps} deleteWaypoint={spyDeleteWaypoint} waypoints={waypoints} />,
+    );
+
+    // then
+    expect(getByText('Test Waypoint One')).toBeTruthy();
+    expect(getByText('Waypoint 2')).toBeTruthy();
+
+    fireEvent.click(getAllByTestId('delete-waypoint')[0]);
+
+    expect(spyDeleteWaypoint).toHaveBeenCalledWith(waypoints[0]);
   });
 
   it('renders the component and sets the current route, then reset the route on unmount', async (): Promise<void> => {

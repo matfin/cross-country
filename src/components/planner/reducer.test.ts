@@ -11,7 +11,7 @@ const waypoint: Waypoint = {
 };
 
 describe('planner reducer tests', (): void => {
-  it('sets the state when updating if the api is loaded', (): void => {
+  it('sets the state when adding a waypoint', (): void => {
     const state: PlannerState = reducer(initialState, {
       type: ActionTypes.ADD_WAYPOINT,
       payload: {
@@ -19,10 +19,6 @@ describe('planner reducer tests', (): void => {
         lng: 12,
       },
     });
-    const check = {
-      ...initialState,
-      waypoints: [waypoint],
-    };
 
     expect(state).toMatchObject({
       ...state,
@@ -33,5 +29,20 @@ describe('planner reducer tests', (): void => {
         },
       ],
     });
+  });
+
+  it('sets the state when deleting a waypoint', (): void => {
+    const state: PlannerState = reducer(
+      {
+        ...initialState,
+        waypoints: [waypoint],
+      },
+      {
+        type: ActionTypes.DELETE_WAYPOINT,
+        payload: waypoint,
+      },
+    );
+
+    expect(state).toEqual(initialState);
   });
 });

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Route } from 'models';
-import { Container, DeleteButton, DeleteIcon, TitleLink } from './routetile.css';
+import { Container, DeleteButton, DeleteIcon, TitleLink } from './routeTile.css';
 
 export interface Props {
   onClickDelete: (route: Route) => void;
