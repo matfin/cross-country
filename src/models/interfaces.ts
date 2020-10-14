@@ -6,7 +6,7 @@ export interface MapPosition {
 export interface Waypoint {
   id: string;
   note?: string;
-  position: MapPosition;
+  marker: google.maps.Marker;
 }
 
 export interface Route {
@@ -38,4 +38,5 @@ export interface RoutesState {
 
 export interface MapState {
   apiLoaded: boolean;
+  map: google.maps.Map | null;
 }

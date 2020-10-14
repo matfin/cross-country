@@ -1,7 +1,8 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import * as reactRouterDom from 'react-router-dom';
-import { MapPosition, Route, Waypoint } from 'models';
+import * as googleServices from 'services/googlemaps';
+import { Route, Waypoint } from 'models';
 import Planner from './planner';
 
 jest.mock('react-router-dom', (): any => ({
@@ -14,12 +15,17 @@ jest.mock('components/map/connectedMap', () => () => <></>);
 describe('Planner tests', (): void => {
   const defaultProps = {
     route: null,
+    map: null,
     waypoints: [],
+
     addWaypoint: jest.fn(),
     deleteWaypoint: jest.fn(),
     resetCurrentRoute: jest.fn(),
     setCurrentRoute: jest.fn(),
   };
+  const mockedMarker = {
+    setMap: jest.fn(),
+  } as any;
 
   it('renders the route title', (): void => {
     // given
@@ -33,21 +39,16 @@ describe('Planner tests', (): void => {
   it('renders waypoints and deletes them on click of delete', (): void => {
     // given
     const spyDeleteWaypoint = jest.fn();
+    const spyDeleteMarkerFromMap = jest.spyOn(googleServices, 'deleteMarkerFromMap');
     const waypoints: Waypoint[] = [
       {
         id: '1234',
         note: 'Test Waypoint One',
-        position: {
-          lat: 1.0,
-          lng: 2.0,
-        },
+        marker: mockedMarker,
       },
       {
         id: '5678',
-        position: {
-          lat: 1.0,
-          lng: 2.0,
-        },
+        marker: mockedMarker,
       },
     ];
     const { getAllByTestId, getByText } = render(
@@ -61,6 +62,10 @@ describe('Planner tests', (): void => {
     fireEvent.click(getAllByTestId('delete-waypoint')[0]);
 
     expect(spyDeleteWaypoint).toHaveBeenCalledWith(waypoints[0]);
+    expect(spyDeleteMarkerFromMap).toHaveBeenCalled();
+
+    // cleanup
+    spyDeleteMarkerFromMap.mockRestore();
   });
 
   it('renders the component and sets the current route, then reset the route on unmount', async (): Promise<void> => {
@@ -100,15 +105,15 @@ describe('Planner tests', (): void => {
     // given
     const spyUseParams = jest.spyOn(reactRouterDom, 'useParams').mockReturnValue({ slug: 'test' });
     const spyAddWaypoint = jest.fn();
-    const position: MapPosition = { lat: 10, lng: 10 };
+
     render(<Planner {...defaultProps} addWaypoint={spyAddWaypoint} />);
 
     // then
     fireEvent(
       window,
-      new CustomEvent<MapPosition>('map:onclick', { detail: position }),
+      new CustomEvent<google.maps.Marker>('map:markerAdded', { detail: mockedMarker }),
     );
-    expect(spyAddWaypoint).toHaveBeenCalledWith(position);
+    expect(spyAddWaypoint).toHaveBeenCalledWith(mockedMarker);
 
     // cleanup
     spyUseParams.mockRestore();

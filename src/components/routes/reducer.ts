@@ -3,12 +3,20 @@ import { Route, RoutesState, ReduxAction } from 'models';
 import { slugify } from 'utils';
 import ActionTypes from './actionTypes';
 
+const sampleRoute: Route = {
+  dateCreated: new Date('1982-04-26'),
+  id: uuidv4(),
+  note: 'A sample route',
+  slug: 'sample-route',
+  title: 'Sample Route',
+};
+
 export const initialState: RoutesState = {
   currentRoute: null,
   error: null,
   newRouteTitle: '',
   pending: false,
-  routes: [],
+  routes: [sampleRoute],
 };
 
 const reducer = (state: RoutesState = initialState, { payload, type }: ReduxAction): RoutesState => {

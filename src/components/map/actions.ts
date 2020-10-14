@@ -5,9 +5,19 @@ interface SetApiLoaded {
   payload: boolean;
 }
 
-export type MapActionTypes = SetApiLoaded;
+interface SetMap {
+  type: typeof ActionTypes.SET_MAP;
+  payload: google.maps.Map<HTMLDivElement>;
+}
+
+export type MapActionTypes = SetApiLoaded | SetMap;
 
 export const setApiLoaded = (apiLoaded: boolean): MapActionTypes => ({
   type: ActionTypes.SET_API_LOADED,
   payload: apiLoaded,
+});
+
+export const setMap = (map: google.maps.Map<HTMLDivElement>): MapActionTypes => ({
+  type: ActionTypes.SET_MAP,
+  payload: map,
 });

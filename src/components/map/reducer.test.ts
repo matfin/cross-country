@@ -15,4 +15,17 @@ describe('map reducer tests', (): void => {
 
     expect(state).toEqual(check);
   });
+
+  it('sets the state when updating the map instance', (): void => {
+    const state: MapState = reducer(initialState, {
+      type: ActionTypes.SET_MAP,
+      payload: {} as google.maps.Map,
+    });
+    const check = {
+      ...initialState,
+      map: {} as google.maps.Map,
+    };
+
+    expect(state).toEqual(check);
+  });
 });
