@@ -63,7 +63,7 @@ const Planner = ({
           ))}
         </WaypointList>
       </Sidebar>
-      <Map waypoints={waypoints} />
+      <Map canEdit={true} waypoints={waypoints} />
     </Container>
   );
 };

@@ -9,6 +9,7 @@ export type Colours = {
   buttonHover: string;
   buttonDisabled: string;
   iconPrimary: string;
+  mapLine: string;
 };
 
 export type FontSizes = {
