@@ -7,6 +7,7 @@ export const colours: Colours = {
   buttonHover: 'rgb(182, 225, 65)',
   buttonDisabled: 'rgba(101, 173, 21, 0.5)',
   iconPrimary: 'rgb(97, 97, 97)',
+  mapLine: '#5555ff',
 };
 
 export const fontSizes: FontSizes = {

@@ -1,4 +1,5 @@
-import { MapPosition } from 'models';
+import { MapPosition, Waypoint } from 'models';
+import { colours } from 'styles';
 
 export const loadGoogleMapsApi = async (): Promise<void | Error> =>
   new Promise((resolve, reject) => {
@@ -23,6 +24,15 @@ export const initMap = (
     mapTypeId: 'terrain',
   });
 
+export const initPolyline = (coordinates: google.maps.LatLng[]): google.maps.Polyline =>
+  new google.maps.Polyline({
+    path: coordinates,
+    geodesic: true,
+    strokeColor: colours.mapLine,
+    strokeOpacity: 0.6,
+    strokeWeight: 2.0,
+  });
+
 export const dispatchEventMarkerAdded = (marker: google.maps.Marker): void => {
   const markerAddedEvent: CustomEvent = new CustomEvent<google.maps.Marker>('map:markerAdded', { detail: marker });
 
@@ -40,6 +50,16 @@ export const addMarkerToMap = ({ latLng }: google.maps.MouseEvent, map: google.m
     position,
     map,
   });
+};
+
+export const waypointsToLatLng = (waypoints: Waypoint[]): google.maps.LatLng[] => {
+  const markers: google.maps.Marker[] = waypoints.map(({ marker }: Waypoint): google.maps.Marker => marker);
+  const coordinates: (google.maps.LatLng | undefined | null)[] = markers.map((marker: google.maps.Marker):
+    | google.maps.LatLng
+    | null
+    | undefined => marker.getPosition());
+
+  return coordinates as google.maps.LatLng[];
 };
 
 export const deleteMarkerFromMap = (marker: google.maps.Marker): void => {
