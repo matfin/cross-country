@@ -35,7 +35,6 @@ const Map = ({
 
     if (apiLoaded && mapRef.current) {
       const map: google.maps.Map<HTMLDivElement> = initMap(mapRef.current);
-
       setMap(map);
     }
   }, [apiLoaded, mapRef]);
@@ -47,7 +46,7 @@ const Map = ({
   }, [map, canEdit]);
 
   useEffect((): void => {
-    if (map) {
+    if (map && waypoints.length) {
       // get the new coords and set up a new polyline
       const coords: google.maps.LatLng[] = waypointsToLatLng(waypoints);
       const newPolyLine = initPolyline(coords);
