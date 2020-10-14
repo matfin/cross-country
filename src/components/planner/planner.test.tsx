@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import * as reactRouterDom from 'react-router-dom';
 import * as googleServices from 'services/googlemaps';
+import * as gpx from 'services/gpx';
 import { MarkerUpdatedDetail, Route, Waypoint } from 'models';
 import Planner from './planner';
 
@@ -27,40 +28,44 @@ describe('Planner tests', (): void => {
   const mockedMarker = {
     setMap: jest.fn(),
   } as any;
+  const waypoints: Waypoint[] = [
+    {
+      id: '1234',
+      dateUpdated: new Date('1982-04-26'),
+      note: 'Test Waypoint One',
+      marker: mockedMarker,
+    },
+    {
+      id: '5678',
+      dateUpdated: new Date('1983-05-27'),
+      marker: mockedMarker,
+    },
+  ];
 
-  it('renders the route title', (): void => {
+  it('renders the route title and welcome message but not the button', (): void => {
     // given
     const route = { title: 'Test Route' } as Route;
-    const { getByText } = render(<Planner {...defaultProps} route={route} />);
+    const { getByTestId, getByText, queryByTestId } = render(<Planner {...defaultProps} route={route} />);
 
     // then
     expect(getByText('Test Route')).toBeTruthy();
+    expect(getByTestId('message')).toBeTruthy();
+    expect(queryByTestId('gpx-button')).toBeFalsy();
   });
 
-  it('renders waypoints and deletes them on click of delete', (): void => {
+  it('renders waypoints and the download button and deletes waypoints on click of delete', (): void => {
     // given
     const spyDeleteWaypoint = jest.fn();
     const spyDeleteMarkerFromMap = jest.spyOn(googleServices, 'deleteMarkerFromMap');
-    const waypoints: Waypoint[] = [
-      {
-        id: '1234',
-        dateUpdated: new Date('1982-04-26'),
-        note: 'Test Waypoint One',
-        marker: mockedMarker,
-      },
-      {
-        id: '5678',
-        dateUpdated: new Date('1983-05-27'),
-        marker: mockedMarker,
-      },
-    ];
-    const { getAllByTestId, getByText } = render(
+
+    const { getAllByTestId, getByText, queryByTestId } = render(
       <Planner {...defaultProps} deleteWaypoint={spyDeleteWaypoint} waypoints={waypoints} />,
     );
 
     // then
     expect(getByText('Test Waypoint One')).toBeTruthy();
     expect(getByText('Waypoint 2')).toBeTruthy();
+    expect(queryByTestId('button')).toBeTruthy();
 
     fireEvent.click(getAllByTestId('delete-waypoint')[0]);
 
@@ -144,6 +149,21 @@ describe('Planner tests', (): void => {
     expect(spyUpdateWaypoint).toHaveBeenCalledWith(coordinate, uuid);
 
     // cleanup
+    spyUseParams.mockRestore();
+  });
+
+  it('calls to download a GPX file on download button click', (): void => {
+    // given
+    const spyDownloadGPX = jest.spyOn(gpx, 'downloadGPX');
+    const spyUseParams = jest.spyOn(reactRouterDom, 'useParams').mockReturnValue({ slug: 'test' });
+    const { getByTestId } = render(<Planner {...defaultProps} waypoints={waypoints} />);
+
+    // then
+    fireEvent.click(getByTestId('button'));
+    expect(spyDownloadGPX).toHaveBeenCalled();
+
+    // cleanup
+    spyDownloadGPX.mockRestore();
     spyUseParams.mockRestore();
   });
 });
