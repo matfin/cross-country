@@ -1,6 +1,7 @@
 enum ActionTypes {
   ADD_WAYPOINT = 'ADD_WAYPOINT',
   DELETE_WAYPOINT = 'DELETE_WAYPOINT',
+  UPDATE_WAYPOINT = 'UPDATE_WAYPOINT',
 }
 
 export default ActionTypes;

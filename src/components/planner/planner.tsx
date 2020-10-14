@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Route, Waypoint } from 'models';
-import { useMarkerAdded } from 'hooks/useMap';
+import { MarkerUpdatedDetail, Route, Waypoint } from 'models';
+import { useMarkerAdded, useMarkerUpdated } from 'hooks/useMap';
 import { deleteMarkerFromMap } from 'services/googlemaps';
 import WaypointTile from 'components/waypointTile/waypointTile';
 import { Container, Heading, Map, Sidebar, WaypointList } from './planner.css';
@@ -16,6 +16,7 @@ export interface Props {
   deleteWaypoint(waypoint: Waypoint): void;
   resetCurrentRoute(): void;
   setCurrentRoute(slug: string): void;
+  updateWaypoint(coordinate: google.maps.LatLngLiteral, uuid: string): void;
 }
 
 const Planner = ({
@@ -25,6 +26,7 @@ const Planner = ({
   resetCurrentRoute,
   route,
   setCurrentRoute,
+  updateWaypoint,
   waypoints,
 }: Props): JSX.Element => {
   const { slug } = useParams<{ slug?: string }>();
@@ -47,6 +49,12 @@ const Planner = ({
     const marker: google.maps.Marker = e.detail;
 
     addWaypoint(marker);
+  });
+
+  useMarkerUpdated((e: CustomEvent<MarkerUpdatedDetail>): void => {
+    const { coordinate, uuid } = e.detail;
+
+    updateWaypoint(coordinate, uuid);
   });
 
   return (

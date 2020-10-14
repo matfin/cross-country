@@ -1,32 +1,40 @@
-import { MapPosition, Waypoint } from 'models';
-import { addWaypoint, deleteWaypoint } from './actions';
+import { Waypoint } from 'models';
+import { addWaypoint, deleteWaypoint, updateWaypoint } from './actions';
 import ActionTypes from './actionTypes';
 
 describe('planner actions test', (): void => {
-  it('adds a waypoint', (): void => {
-    const position: MapPosition = {
-      lat: 10.0,
-      lng: 10.0,
-    };
+  const marker: google.maps.Marker = {} as google.maps.Marker;
 
-    expect(addWaypoint(position)).toEqual({
+  it('adds a waypoint', (): void => {
+    expect(addWaypoint(marker)).toEqual({
       type: ActionTypes.ADD_WAYPOINT,
-      payload: position,
+      payload: {},
     });
   });
 
   it('deletes a waypoint', (): void => {
     const waypoint: Waypoint = {
       id: '1234',
-      position: {
-        lat: 10.0,
-        lng: 1.0,
-      },
+      dateUpdated: new Date(),
+      marker,
     };
 
     expect(deleteWaypoint(waypoint)).toEqual({
       type: ActionTypes.DELETE_WAYPOINT,
       payload: waypoint,
+    });
+  });
+
+  it('updates a waypoint', (): void => {
+    const coordinate: google.maps.LatLngLiteral = {
+      lat: 1.0,
+      lng: 1.0,
+    };
+    const uuid = '123';
+
+    expect(updateWaypoint(coordinate, uuid)).toEqual({
+      type: ActionTypes.UPDATE_WAYPOINT,
+      payload: { coordinate, uuid },
     });
   });
 });

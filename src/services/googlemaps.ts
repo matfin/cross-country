@@ -1,4 +1,4 @@
-import { MapPosition, Waypoint } from 'models';
+import { MapPosition, MarkerUpdatedDetail, Waypoint } from 'models';
 import { colours } from 'styles';
 
 export const loadGoogleMapsApi = async (): Promise<void | Error> =>
@@ -39,6 +39,16 @@ export const dispatchEventMarkerAdded = (marker: google.maps.Marker): void => {
   window.dispatchEvent(markerAddedEvent);
 };
 
+export const dispatchEventMarkerCoordinateUpdated = (coordinate: google.maps.LatLngLiteral, uuid: string): void => {
+  const detail: MarkerUpdatedDetail = {
+    coordinate,
+    uuid,
+  };
+  const markerUpdatedEvent: CustomEvent = new CustomEvent<MarkerUpdatedDetail>('map:markerUpdated', { detail });
+
+  window.dispatchEvent(markerUpdatedEvent);
+};
+
 export const addMarkerToMap = ({ latLng }: google.maps.MouseEvent, map: google.maps.Map): google.maps.Marker => {
   const { lat, lng } = latLng;
   const position: MapPosition = {
@@ -47,6 +57,7 @@ export const addMarkerToMap = ({ latLng }: google.maps.MouseEvent, map: google.m
   };
 
   return new google.maps.Marker({
+    draggable: true,
     position,
     map,
   });
@@ -64,6 +75,17 @@ export const waypointsToLatLng = (waypoints: Waypoint[]): google.maps.LatLng[] =
 
 export const deleteMarkerFromMap = (marker: google.maps.Marker): void => {
   marker.setMap(null);
+};
+
+export const addMarkerDragEndListener = (marker: google.maps.Marker, uuid: string): void => {
+  marker.addListener('dragend', ({ latLng: { lat, lng } }: google.maps.MouseEvent): void => {
+    const coord: google.maps.LatLngLiteral = {
+      lat: lat(),
+      lng: lng(),
+    };
+
+    dispatchEventMarkerCoordinateUpdated(coord, uuid);
+  });
 };
 
 export const addEventListeners = (map: google.maps.Map<HTMLDivElement>): void => {

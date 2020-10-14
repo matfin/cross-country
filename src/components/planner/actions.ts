@@ -1,4 +1,4 @@
-import { Waypoint } from 'models';
+import { MarkerUpdatedDetail, Waypoint } from 'models';
 import ActionTypes from './actionTypes';
 
 interface AddWaypoint {
@@ -11,7 +11,12 @@ interface DeleteWaypoint {
   payload: Waypoint;
 }
 
-export type PlannerActionTypes = AddWaypoint | DeleteWaypoint;
+interface UpdateWaypoint {
+  type: ActionTypes.UPDATE_WAYPOINT;
+  payload: MarkerUpdatedDetail;
+}
+
+export type PlannerActionTypes = AddWaypoint | DeleteWaypoint | UpdateWaypoint;
 
 export const addWaypoint = (marker: google.maps.Marker): PlannerActionTypes => ({
   type: ActionTypes.ADD_WAYPOINT,
@@ -21,4 +26,9 @@ export const addWaypoint = (marker: google.maps.Marker): PlannerActionTypes => (
 export const deleteWaypoint = (waypoint: Waypoint): PlannerActionTypes => ({
   type: ActionTypes.DELETE_WAYPOINT,
   payload: waypoint,
+});
+
+export const updateWaypoint = (coordinate: google.maps.LatLngLiteral, uuid: string): PlannerActionTypes => ({
+  type: ActionTypes.UPDATE_WAYPOINT,
+  payload: { coordinate, uuid },
 });

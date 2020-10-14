@@ -48,14 +48,17 @@ const Map = ({
 
   useEffect((): void => {
     if (map) {
+      // get the new coords and set up a new polyline
       const coords: google.maps.LatLng[] = waypointsToLatLng(waypoints);
       const newPolyLine = initPolyline(coords);
 
+      // if we have an existing polyline, nuke it
       if (polyLine) {
         polyLine.setMap(null);
         setPolyLine(null);
       }
 
+      // then set the new poly line to the map and update the state
       newPolyLine.setMap(map);
       setPolyLine(newPolyLine);
     }
