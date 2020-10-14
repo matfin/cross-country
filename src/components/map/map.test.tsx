@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { Waypoint } from 'models';
 import * as googleServices from 'services/googlemaps';
 import Map from './map';

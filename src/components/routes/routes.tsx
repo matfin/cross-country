@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'models';
-import RouteTile from 'components/routetile/routetile';
+import RouteTile from 'components/routeTile/routeTile';
 import { AddRoute, Button, Container, Heading, Input, Map, RouteList, Sidebar } from './routes.css';
 
 export interface Props {

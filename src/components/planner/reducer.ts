@@ -21,6 +21,16 @@ const reducer = (state: PlannerState = initialState, { payload, type }: ReduxAct
         waypoints: [...waypoints, waypoint],
       };
     }
+    case ActionTypes.DELETE_WAYPOINT: {
+      const { waypoints } = state;
+      const waypoint: Waypoint = payload;
+      const updatedWaypoints: Waypoint[] = waypoints.filter(({ id }: Waypoint) => id !== waypoint.id);
+
+      return {
+        ...state,
+        waypoints: updatedWaypoints,
+      };
+    }
     default: {
       return state;
     }

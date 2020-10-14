@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { Route } from 'models';
 import { renderWithRouter } from 'utils/testutils';
-import RouteTile, { Props } from './routetile';
+import RouteTile, { Props } from './routeTile';
 
 describe('RouteTile tests', (): void => {
   const route: Route = {

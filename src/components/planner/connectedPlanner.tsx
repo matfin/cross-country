@@ -1,9 +1,9 @@
 import React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { MapPosition } from 'models';
+import { MapPosition, Waypoint } from 'models';
 import { resetCurrentRoute, setCurrentRoute, RoutesActionTypes } from 'components/routes/actions';
-import { addWaypoint } from './actions';
+import { addWaypoint, deleteWaypoint } from './actions';
 import Planner, { Props } from './planner';
 
 const mapStateToProps = (state: any) => ({
@@ -14,6 +14,9 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: Dispatch<RoutesActionTypes>) => ({
   addWaypoint: (position: MapPosition): void => {
     dispatch<any>(addWaypoint(position));
+  },
+  deleteWaypoint: (waypoint: Waypoint): void => {
+    dispatch<any>(deleteWaypoint(waypoint));
   },
   resetCurrentRoute: (): void => {
     dispatch<any>(resetCurrentRoute());

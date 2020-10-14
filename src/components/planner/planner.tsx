@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapPosition, Route, Waypoint } from 'models';
 import useMapClick from 'hooks/useMapClick';
+import WaypointTile from 'components/waypointTile/waypointTile';
 import { Container, Heading, Map, Sidebar, WaypointList } from './planner.css';
 
 export interface Props {
@@ -10,6 +11,7 @@ export interface Props {
   waypoints: Waypoint[];
 
   addWaypoint(position: MapPosition): void;
+  deleteWaypoint(waypoint: Waypoint): void;
   resetCurrentRoute(): void;
   setCurrentRoute(slug: string): void;
 }
@@ -17,6 +19,7 @@ export interface Props {
 const Planner = ({
   addWaypoint,
   className,
+  deleteWaypoint,
   resetCurrentRoute,
   route,
   setCurrentRoute,
@@ -42,7 +45,15 @@ const Planner = ({
     <Container className={className}>
       <Sidebar>
         <Heading>{route?.title}</Heading>
-        <WaypointList />
+        <WaypointList>
+          {waypoints.map((waypoint: Waypoint, idx: number) => (
+            <WaypointTile
+              key={waypoint.id}
+              onClickDelete={deleteWaypoint}
+              waypoint={{ ...waypoint, note: waypoint.note ?? `Waypoint ${idx + 1}` }}
+            />
+          ))}
+        </WaypointList>
       </Sidebar>
       <Map waypoints={waypoints} />
     </Container>

@@ -33,7 +33,6 @@ export const Heading = styled.h1`
 
 export const WaypointList = styled.ul`
   grid-area: waypoints;
-  background: red;
 `;
 
 export const Map = styled(MapComponent)`
