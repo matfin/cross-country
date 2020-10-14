@@ -1,4 +1,4 @@
-import { MapPosition, Waypoint } from 'models';
+import { MapPosition } from 'models';
 
 export const loadGoogleMapsApi = async (): Promise<void | Error> =>
   new Promise((resolve, reject) => {
@@ -23,27 +23,33 @@ export const initMap = (
     mapTypeId: 'terrain',
   });
 
-export const dispatchMapClickedAtPosition = ({ latLng: { lat, lng } }: google.maps.MouseEvent): void => {
+export const dispatchEventMarkerAdded = (marker: google.maps.Marker): void => {
+  const markerAddedEvent: CustomEvent = new CustomEvent<google.maps.Marker>('map:markerAdded', { detail: marker });
+
+  window.dispatchEvent(markerAddedEvent);
+};
+
+export const addMarkerToMap = ({ latLng }: google.maps.MouseEvent, map: google.maps.Map): google.maps.Marker => {
+  const { lat, lng } = latLng;
   const position: MapPosition = {
     lat: lat(),
     lng: lng(),
   };
-  const mapClickedEvent: CustomEvent = new CustomEvent<MapPosition>('map:onclick', { detail: position });
 
-  window.dispatchEvent(mapClickedEvent);
-};
-
-export const addMarkers = (map: google.maps.Map<HTMLDivElement>, waypoints: Waypoint[]): void => {
-  waypoints.forEach((waypoint: Waypoint): void => {
-    const { position } = waypoint;
-
-    new google.maps.Marker({
-      position,
-      map,
-    });
+  return new google.maps.Marker({
+    position,
+    map,
   });
 };
 
+export const deleteMarkerFromMap = (marker: google.maps.Marker): void => {
+  marker.setMap(null);
+};
+
 export const addEventListeners = (map: google.maps.Map<HTMLDivElement>): void => {
-  map.addListener('click', dispatchMapClickedAtPosition);
+  map.addListener('click', (e: google.maps.MouseEvent): void => {
+    const marker = addMarkerToMap(e, map);
+
+    dispatchEventMarkerAdded(marker);
+  });
 };

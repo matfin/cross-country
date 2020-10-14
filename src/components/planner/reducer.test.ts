@@ -4,20 +4,14 @@ import reducer, { initialState } from './reducer';
 
 const waypoint: Waypoint = {
   id: '123',
-  position: {
-    lat: 12,
-    lng: 12,
-  },
+  marker: {} as google.maps.Marker,
 };
 
 describe('planner reducer tests', (): void => {
   it('sets the state when adding a waypoint', (): void => {
     const state: PlannerState = reducer(initialState, {
       type: ActionTypes.ADD_WAYPOINT,
-      payload: {
-        lat: 12,
-        lng: 12,
-      },
+      payload: {} as google.maps.Marker,
     });
 
     expect(state).toMatchObject({
@@ -26,6 +20,7 @@ describe('planner reducer tests', (): void => {
         {
           ...waypoint,
           id: expect.any(String),
+          marker: expect.any(Object),
         },
       ],
     });

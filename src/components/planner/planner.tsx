@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { MapPosition, Route, Waypoint } from 'models';
-import useMapClick from 'hooks/useMapClick';
+import { Route, Waypoint } from 'models';
+import { useMarkerAdded } from 'hooks/useMap';
+import { deleteMarkerFromMap } from 'services/googlemaps';
 import WaypointTile from 'components/waypointTile/waypointTile';
 import { Container, Heading, Map, Sidebar, WaypointList } from './planner.css';
 
 export interface Props {
   className?: string;
+  map: google.maps.Map | null;
   route: Route | null;
   waypoints: Waypoint[];
 
-  addWaypoint(position: MapPosition): void;
+  addWaypoint(marker: google.maps.Marker): void;
   deleteWaypoint(waypoint: Waypoint): void;
   resetCurrentRoute(): void;
   setCurrentRoute(slug: string): void;
@@ -26,6 +28,12 @@ const Planner = ({
   waypoints,
 }: Props): JSX.Element => {
   const { slug } = useParams<{ slug?: string }>();
+  const onClickDeleteWaypoint = (waypoint: Waypoint): void => {
+    const { marker } = waypoint;
+
+    deleteMarkerFromMap(marker);
+    deleteWaypoint(waypoint);
+  };
 
   useEffect((): (() => void) => {
     if (slug) {
@@ -35,10 +43,10 @@ const Planner = ({
     return (): void => resetCurrentRoute();
   }, [slug]);
 
-  useMapClick((e: CustomEvent<MapPosition>): void => {
-    const position: MapPosition = e.detail;
+  useMarkerAdded((e: CustomEvent<google.maps.Marker>): void => {
+    const marker: google.maps.Marker = e.detail;
 
-    addWaypoint(position);
+    addWaypoint(marker);
   });
 
   return (
@@ -49,7 +57,7 @@ const Planner = ({
           {waypoints.map((waypoint: Waypoint, idx: number) => (
             <WaypointTile
               key={waypoint.id}
-              onClickDelete={deleteWaypoint}
+              onClickDelete={onClickDeleteWaypoint}
               waypoint={{ ...waypoint, note: waypoint.note ?? `Waypoint ${idx + 1}` }}
             />
           ))}
