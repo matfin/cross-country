@@ -3,15 +3,21 @@ import { Store } from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureMockStore, { MockStoreCreator } from 'redux-mock-store';
 import { render, RenderResult } from '@testing-library/react';
-import { RoutesState } from 'models';
-import { initialState } from 'components/routes/reducer';
+import { MapState, PlannerState, RoutesState } from 'models';
+import { initialState as mapState } from 'components/map/reducer';
+import { initialState as plannerState } from 'views/planner/reducer';
+import { initialState as routesState } from 'views/routes/reducer';
 
 interface CombinedReducerStates {
+  mapState?: MapState;
+  plannerState?: PlannerState;
   routesState?: RoutesState;
 }
 
 const defaultCombinedStates: CombinedReducerStates = {
-  routesState: initialState,
+  mapState,
+  plannerState,
+  routesState,
 };
 
 export const createMockStore = (state: CombinedReducerStates = defaultCombinedStates): Store => {

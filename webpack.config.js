@@ -16,6 +16,7 @@ module.exports = (env, { mode }) => ({
       'services': path.resolve(__dirname, 'src/services'),
       'styles': path.resolve(__dirname, 'src/styles'),
       'utils': path.resolve(__dirname, 'src/utils'),
+      'views': path.resolve(__dirname, 'src/views'),
     },
     extensions: ['.ts', '.tsx', '.js']
   },

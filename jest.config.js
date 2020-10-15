@@ -17,8 +17,8 @@ module.exports = {
     'node_modules',
     'src/utils/testutils.tsx',
     'src/components/map/connectedMap.tsx',
-    'src/components/planner/connectedPlanner.tsx',
-    'src/components/routes/connectedRoutes.tsx',
+    'src/views/planner/connectedPlanner.tsx',
+    'src/views/routes/connectedRoutes.tsx',
     'src/services/'
   ],
   moduleDirectories: ['node_modules', 'src'],
@@ -29,6 +29,7 @@ module.exports = {
     '^services/(.*)$': '<rootDir>/src/services/$1',
     '^styles/(.*)$': '<rootDir>/src/styles/$1',
     '^utils/(.*)$': '<rootDir>/src/utils/$1',
+    '^views/(.*)$': '<rootDir>/src/views/$1',
   },
   testEnvironment: 'jest-environment-jsdom-sixteen'
 };

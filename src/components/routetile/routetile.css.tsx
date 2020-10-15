@@ -10,7 +10,7 @@ export const Container = styled.li`
 `;
 
 export const TitleLink = styled(Link)`
-  color: ${colours.primary};
+  color: ${colours.secondary};
 `;
 
 export const DeleteButton = styled.button``;
