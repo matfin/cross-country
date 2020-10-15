@@ -9,10 +9,12 @@ export const Container = styled.li`
 `;
 
 export const Note = styled.span`
-  color: ${colours.primary};
+  color: ${colours.secondary};
 `;
 
-export const DeleteButton = styled.button``;
+export const DeleteButton = styled.button`
+  cursor: pointer;
+`;
 
 export const DeleteIcon = styled(Bin)`
   fill: ${colours.iconPrimary};

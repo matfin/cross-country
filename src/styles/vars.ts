@@ -2,6 +2,7 @@ import { Colours, FontSizes, FontWeights } from 'models';
 
 export const colours: Colours = {
   primary: 'rgb(255, 255, 255)',
+  backdropPrimary: 'rgb(255, 255, 255, 0.9)',
   secondary: 'rgb(42, 42, 42)',
   buttonPrimary: 'rgb(101, 173, 21)',
   buttonHover: 'rgb(182, 225, 65)',

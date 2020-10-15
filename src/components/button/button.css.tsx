@@ -9,7 +9,7 @@ export const Container = styled.button<ContainerProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 3rem;
+  height: 2rem;
   background: ${colours.buttonPrimary};
   color: ${colours.secondary};
   border-radius: 0.5rem;

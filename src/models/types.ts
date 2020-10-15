@@ -4,6 +4,7 @@ import { RoutesState } from './interfaces';
 
 export type Colours = {
   primary: string;
+  backdropPrimary: string;
   secondary: string;
   buttonPrimary: string;
   buttonHover: string;

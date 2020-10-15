@@ -2,7 +2,7 @@ import React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { Waypoint } from 'models';
-import { resetCurrentRoute, setCurrentRoute, RoutesActionTypes } from 'components/routes/actions';
+import { resetCurrentRoute, setCurrentRoute, RoutesActionTypes } from 'views/routes/actions';
 import { addWaypoint, deleteWaypoint, updateWaypoint } from './actions';
 import Planner, { Props } from './planner';
 
