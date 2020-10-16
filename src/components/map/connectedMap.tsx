@@ -1,20 +1,21 @@
 import React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { AppState } from 'models';
 import { MapActionTypes, setApiLoaded, setMap } from './actions';
 import Map, { Props } from './map';
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   apiLoaded: state.mapState.apiLoaded,
   map: state.mapState.map,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<MapActionTypes>) => ({
   setApiLoaded: (apiLoaded: boolean): void => {
-    dispatch<any>(setApiLoaded(apiLoaded));
+    dispatch<MapActionTypes>(setApiLoaded(apiLoaded));
   },
   setMap: (map: google.maps.Map<HTMLDivElement>): void => {
-    dispatch<any>(setMap(map));
+    dispatch<MapActionTypes>(setMap(map));
   },
 });
 

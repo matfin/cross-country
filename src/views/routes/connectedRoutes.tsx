@@ -1,11 +1,11 @@
 import React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Route } from 'models';
+import { AppState, Route } from 'models';
 import { addRoute, deleteRoute, updateNewRouteTitle, RoutesActionTypes } from './actions';
 import Routes, { Props } from './routes';
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   error: state.routesState.error,
   newRouteTitle: state.routesState.newRouteTitle,
   pending: state.routesState.pending,
@@ -14,13 +14,13 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<RoutesActionTypes>) => ({
   addRoute: (): void => {
-    dispatch<any>(addRoute());
+    dispatch<RoutesActionTypes>(addRoute());
   },
   deleteRoute: (route: Route): void => {
-    dispatch<any>(deleteRoute(route));
+    dispatch<RoutesActionTypes>(deleteRoute(route));
   },
   updateNewRouteTitle: (title: string): void => {
-    dispatch<any>(updateNewRouteTitle(title));
+    dispatch<RoutesActionTypes>(updateNewRouteTitle(title));
   },
 });
 

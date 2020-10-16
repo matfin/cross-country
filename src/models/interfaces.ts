@@ -25,8 +25,8 @@ export interface Route {
 }
 
 export interface ReduxAction {
-  error?: any;
-  payload?: any;
+  error?: Error;
+  payload?: unknown;
   type: string;
 }
 
@@ -36,7 +36,7 @@ export interface PlannerState {
 
 export interface RoutesState {
   currentRoute: Route | null;
-  error: any;
+  error: Error;
   newRouteTitle: string;
   pending: boolean;
   routes: Route[];
@@ -44,5 +44,11 @@ export interface RoutesState {
 
 export interface MapState {
   apiLoaded: boolean;
-  map: google.maps.Map | null;
+  map: google.maps.Map<HTMLDivElement> | null;
+}
+
+export interface AppState {
+  mapState: MapState;
+  plannerState: PlannerState;
+  routesState: RoutesState;
 }
