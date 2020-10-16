@@ -1,8 +1,9 @@
 import React from 'react';
+import { JSXChildren } from 'models';
 import { Container } from './button.css';
 
 export interface Props {
-  children?: any;
+  children?: JSXChildren;
   className?: string;
   disabled?: boolean;
   onClick: () => void;
