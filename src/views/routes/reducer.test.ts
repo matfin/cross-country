@@ -70,57 +70,29 @@ describe('routes reducer test', (): void => {
     expect(state).toEqual(check);
   });
 
-  it('sets the current route from a slug', (): void => {
+  it('sets the state when saving a route', (): void => {
     const state: RoutesState = reducer(
       {
         ...initialState,
         routes: [route],
       },
       {
-        type: ActionTypes.SET_CURRENT_ROUTE,
-        payload: 'test-route',
+        type: ActionTypes.SAVE_ROUTE,
+        payload: {
+          ...route,
+          title: 'Updated Route',
+        },
       },
     );
-    const check: RoutesState = {
+
+    expect(state).toEqual({
       ...initialState,
-      routes: [route],
-      currentRoute: route,
-    };
-
-    expect(state).toEqual(check);
-  });
-
-  it('sets the current route to null for an unknown slug', (): void => {
-    const state: RoutesState = reducer(
-      {
-        ...initialState,
-        routes: [route],
-      },
-      {
-        type: ActionTypes.SET_CURRENT_ROUTE,
-        payload: 'unknown-route',
-      },
-    );
-    const check: RoutesState = {
-      ...initialState,
-      routes: [route],
-      currentRoute: null,
-    };
-
-    expect(state).toEqual(check);
-  });
-
-  it('resets the current route', (): void => {
-    const state: RoutesState = reducer(
-      {
-        ...initialState,
-        currentRoute: route,
-      },
-      {
-        type: ActionTypes.RESET_CURRENT_ROUTE,
-      },
-    );
-
-    expect(state).toEqual(initialState);
+      routes: [
+        {
+          ...route,
+          title: 'Updated Route',
+        },
+      ],
+    });
   });
 });

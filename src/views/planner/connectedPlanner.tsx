@@ -1,29 +1,39 @@
 import React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { AppState, Waypoint } from 'models';
-import { resetCurrentRoute, setCurrentRoute, RoutesActionTypes } from 'views/routes/actions';
-import { addWaypoint, deleteWaypoint, PlannerActionTypes, updateWaypoint } from './actions';
+import { AppState, Route, Waypoint } from 'models';
+import { RoutesActionTypes } from 'views/routes/actions';
+import {
+  addWaypoint,
+  deleteWaypoint,
+  PlannerActionTypes,
+  resetPlanner,
+  setCurrentRoute,
+  updateWaypoint,
+} from './actions';
+import { saveRoute } from 'views/routes/actions';
 import Planner, { Props } from './planner';
 
 const mapStateToProps = (state: AppState) => ({
   map: state.mapState.map,
-  route: state.routesState.currentRoute,
-  waypoints: state.plannerState.waypoints,
+  route: state.plannerState.route,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RoutesActionTypes | PlannerActionTypes>) => ({
-  addWaypoint: (marker: google.maps.Marker): void => {
-    dispatch<PlannerActionTypes>(addWaypoint(marker));
+  addWaypoint: (waypoint: Waypoint): void => {
+    dispatch<PlannerActionTypes>(addWaypoint(waypoint));
   },
   deleteWaypoint: (waypoint: Waypoint): void => {
     dispatch<PlannerActionTypes>(deleteWaypoint(waypoint));
   },
-  resetCurrentRoute: (): void => {
-    dispatch<RoutesActionTypes>(resetCurrentRoute());
+  resetPlanner: (): void => {
+    dispatch<PlannerActionTypes>(resetPlanner());
+  },
+  saveRoute: (route: Route): void => {
+    dispatch<RoutesActionTypes>(saveRoute(route));
   },
   setCurrentRoute: (slug: string): void => {
-    dispatch<RoutesActionTypes>(setCurrentRoute(slug));
+    dispatch<any>(setCurrentRoute(slug));
   },
   updateWaypoint: (coordinate: google.maps.LatLngLiteral, uuid: string): void => {
     dispatch<PlannerActionTypes>(updateWaypoint(coordinate, uuid));

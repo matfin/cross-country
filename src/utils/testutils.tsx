@@ -1,5 +1,6 @@
 import React from 'react';
 import { Store } from 'redux';
+import thunkMiddleware from 'redux-thunk';
 import { BrowserRouter } from 'react-router-dom';
 import configureMockStore, { MockStoreCreator } from 'redux-mock-store';
 import { render, RenderResult } from '@testing-library/react';
@@ -21,7 +22,7 @@ const defaultCombinedStates: CombinedReducerStates = {
 };
 
 export const createMockStore = (state: CombinedReducerStates = defaultCombinedStates): Store => {
-  const mockStore: MockStoreCreator = configureMockStore();
+  const mockStore: MockStoreCreator = configureMockStore([thunkMiddleware]);
 
   return mockStore(state);
 };

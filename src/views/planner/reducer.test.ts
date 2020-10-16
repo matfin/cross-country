@@ -1,7 +1,13 @@
-import { PlannerState, Waypoint } from 'models';
+import { PlannerState, Route, Waypoint } from 'models';
 import ActionTypes from './actionTypes';
-import * as googleServices from 'services/googlemaps';
 import reducer, { initialState } from './reducer';
+
+const route: Route = {
+  dateCreated: new Date('1982-04-26'),
+  id: '1234',
+  slug: 'test-route',
+  title: 'Test Route',
+};
 
 const waypoint: Waypoint = {
   dateUpdated: new Date(),
@@ -11,34 +17,46 @@ const waypoint: Waypoint = {
 
 describe('planner reducer tests', (): void => {
   it('sets the state when adding a waypoint', (): void => {
-    const spyAddMarkerDragEndListener = jest.spyOn(googleServices, 'addMarkerDragEndListener').mockImplementation();
-    const state: PlannerState = reducer(initialState, {
-      type: ActionTypes.ADD_WAYPOINT,
-      payload: {} as google.maps.Marker,
-    });
+    // given route is not null
+    let state: PlannerState = reducer(
+      {
+        ...initialState,
+        route,
+      },
+      {
+        type: ActionTypes.ADD_WAYPOINT,
+        payload: waypoint,
+      },
+    );
 
+    // then
     expect(state).toMatchObject({
-      ...state,
-      waypoints: [
-        {
-          ...waypoint,
-          dateUpdated: expect.any(Date),
-          id: expect.any(String),
-          marker: expect.any(Object),
-        },
-      ],
+      ...initialState,
+      route: {
+        ...route,
+        waypoints: [waypoint],
+      },
     });
-    expect(spyAddMarkerDragEndListener).toHaveBeenCalled();
 
-    // cleanup
-    spyAddMarkerDragEndListener.mockRestore();
+    // given route is null
+    state = reducer(initialState, {
+      type: ActionTypes.ADD_WAYPOINT,
+      payload: waypoint,
+    });
+
+    // then
+    expect(state).toEqual(initialState);
   });
 
   it('sets the state when deleting a waypoint', (): void => {
-    const state: PlannerState = reducer(
+    // given route is not null
+    let state: PlannerState = reducer(
       {
         ...initialState,
-        waypoints: [waypoint],
+        route: {
+          ...route,
+          waypoints: [waypoint],
+        },
       },
       {
         type: ActionTypes.DELETE_WAYPOINT,
@@ -46,11 +64,59 @@ describe('planner reducer tests', (): void => {
       },
     );
 
+    // then
+    expect(state).toEqual({
+      ...initialState,
+      route: {
+        ...route,
+        waypoints: [],
+      },
+    });
+
+    // given route is null
+    state = reducer(initialState, {
+      type: ActionTypes.DELETE_WAYPOINT,
+      payload: waypoint,
+    });
+
+    // then
     expect(state).toEqual(initialState);
+
+    // given there are no waypoints on the route
+    state = reducer(
+      {
+        ...initialState,
+        route: {
+          ...route,
+          waypoints: undefined,
+        },
+      },
+      {
+        type: ActionTypes.DELETE_WAYPOINT,
+        payload: waypoint,
+      },
+    );
+
+    // then
+    expect(state).toEqual({
+      ...initialState,
+      route: {
+        ...route,
+        waypoints: [],
+      },
+    });
   });
 
   it('sets the state when updating a waypoint', (): void => {
+    // given route is not null
     const sypSetPosition = jest.fn();
+    const payload: { coordinate: google.maps.LatLngLiteral; uuid: string } = {
+      coordinate: {
+        lat: 10.0,
+        lng: 10.0,
+      },
+      uuid: '123',
+    };
     const waypoints: Waypoint[] = [
       {
         ...waypoint,
@@ -59,28 +125,63 @@ describe('planner reducer tests', (): void => {
         } as any,
       },
     ];
-    const state: PlannerState = reducer(
+    let state: PlannerState = reducer(
       {
         ...initialState,
-        waypoints,
+        route: {
+          ...route,
+          waypoints,
+        },
       },
       {
         type: ActionTypes.UPDATE_WAYPOINT,
-        payload: {
-          coordinate: {
-            lat: 10.0,
-            lng: 10.0,
-          },
-          uuid: '123',
-        },
+        payload,
       },
     );
 
+    // then
     expect(state).toEqual({
       ...initialState,
-      waypoints,
+      route: {
+        ...route,
+        waypoints,
+      },
     });
-    expect(sypSetPosition).toHaveBeenCalled();
+    expect(sypSetPosition).toHaveBeenCalledTimes(1);
+
+    // given route is null
+    state = reducer(initialState, {
+      type: ActionTypes.UPDATE_WAYPOINT,
+      payload,
+    });
+
+    // then
+    expect(state).toEqual(initialState);
+    expect(sypSetPosition).toHaveBeenCalledTimes(1);
+
+    // given there are no waypoints on the route
+    state = reducer(
+      {
+        ...initialState,
+        route: {
+          ...route,
+          waypoints: undefined,
+        },
+      },
+      {
+        type: ActionTypes.UPDATE_WAYPOINT,
+        payload: waypoint,
+      },
+    );
+
+    // then
+    expect(state).toEqual({
+      ...initialState,
+      route: {
+        ...route,
+        waypoints: [],
+      },
+    });
   });
 
   it('does not set the state when updating a waypoint that was not found', (): void => {
@@ -98,7 +199,10 @@ describe('planner reducer tests', (): void => {
     reducer(
       {
         ...initialState,
-        waypoints,
+        route: {
+          ...route,
+          waypoints,
+        },
       },
       {
         type: ActionTypes.UPDATE_WAYPOINT,
@@ -113,5 +217,46 @@ describe('planner reducer tests', (): void => {
     );
 
     expect(sypSetPosition).not.toHaveBeenCalled();
+  });
+
+  it('sets the state when resetting the planner', (): void => {
+    // given
+    const state = reducer(
+      {
+        ...initialState,
+        route: {
+          ...route,
+          waypoints: [{}, {}] as any,
+        },
+      },
+      {
+        type: ActionTypes.RESET_PLANNER,
+      },
+    );
+
+    // then
+    expect(state).toEqual(initialState);
+  });
+
+  it('sets the state when setting a current route', (): void => {
+    // given
+    const state = reducer(initialState, {
+      type: ActionTypes.SET_CURRENT_ROUTE,
+      payload: route,
+    });
+
+    // then
+    expect(state).toEqual({
+      ...initialState,
+      route,
+    });
+  });
+
+  it('returns the default state', (): void => {
+    const state: PlannerState = reducer(undefined, {
+      type: '',
+    });
+
+    expect(state).toEqual(initialState);
   });
 });

@@ -9,7 +9,6 @@ export interface Props {
   updateNewRouteTitle(title: string): void;
 
   className?: string;
-  error?: Error;
   newRouteTitle: string;
   pending: boolean;
   routes: Route[];

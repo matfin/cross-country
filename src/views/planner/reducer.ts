@@ -1,61 +1,90 @@
-import { v4 as uuidv4 } from 'uuid';
-import { PlannerState, ReduxAction, Waypoint } from 'models';
-import { addMarkerDragEndListener } from 'services/googlemaps';
+import { PlannerState, ReduxAction, Route, Waypoint } from 'models';
 import ActionTypes from './actionTypes';
 
 export const initialState: PlannerState = {
-  waypoints: [],
+  route: null,
 };
 
 const reducer = (state: PlannerState = initialState, { payload, type }: ReduxAction): PlannerState => {
   switch (type) {
     case ActionTypes.ADD_WAYPOINT: {
-      const marker: google.maps.Marker = payload;
-      const id = uuidv4();
-      const waypoint: Waypoint = {
-        dateUpdated: new Date(),
-        id,
-        marker,
-      };
-      const { waypoints } = state;
+      const waypoint: Waypoint = payload;
+      const { route } = state;
 
-      // TODO: Put this somewhere better
-      addMarkerDragEndListener(marker, id);
+      if (route) {
+        const { waypoints } = route;
 
-      return {
-        ...state,
-        waypoints: [...waypoints, waypoint],
-      };
+        return {
+          ...state,
+          route: {
+            ...route,
+            waypoints: [...(waypoints ?? []), waypoint],
+          },
+        };
+      }
+
+      return state;
     }
 
     case ActionTypes.DELETE_WAYPOINT: {
-      const { waypoints } = state;
-      const waypoint: Waypoint = payload;
-      const updatedWaypoints: Waypoint[] = waypoints.filter(({ id }: Waypoint) => id !== waypoint.id);
+      const { route } = state;
+
+      if (route) {
+        const waypointToDelete: Waypoint = payload;
+        const { waypoints } = route;
+        const updatedWaypoints: Waypoint[] = (waypoints ?? []).filter(({ id }: Waypoint) => id !== waypointToDelete.id);
+
+        return {
+          ...state,
+          route: {
+            ...route,
+            waypoints: updatedWaypoints,
+          },
+        };
+      }
+
+      return state;
+    }
+
+    case ActionTypes.RESET_PLANNER: {
+      return initialState;
+    }
+
+    case ActionTypes.SET_CURRENT_ROUTE: {
+      const route: Route | null = payload;
 
       return {
         ...state,
-        waypoints: updatedWaypoints,
+        route,
       };
     }
 
     case ActionTypes.UPDATE_WAYPOINT: {
-      const { waypoints } = state;
-      const { coordinate, uuid } = payload;
-      const foundIndex: number = waypoints.findIndex(({ id }: Waypoint) => id === uuid);
+      const { route } = state;
 
-      if (foundIndex !== -1) {
-        const waypointToUpdate: Waypoint = waypoints[foundIndex];
+      if (route) {
+        const { waypoints } = route;
+        const { coordinate, uuid } = payload;
+        const foundIndex: number = (waypoints ?? []).findIndex(({ id }: Waypoint) => id === uuid);
 
-        waypointToUpdate.marker.setPosition(coordinate);
-        waypointToUpdate.dateUpdated = new Date();
-        waypoints[foundIndex] = waypointToUpdate;
+        if (waypoints && foundIndex !== -1) {
+          const waypointToUpdate: Waypoint = waypoints[foundIndex];
+
+          waypointToUpdate.marker.setPosition(coordinate);
+          waypointToUpdate.dateUpdated = new Date();
+          waypoints[foundIndex] = waypointToUpdate;
+        }
+
+        return {
+          ...state,
+          route: {
+            ...route,
+            waypoints: [...(waypoints ?? [])],
+          },
+        };
       }
 
-      return {
-        ...state,
-        waypoints: [...waypoints],
-      };
+      return state;
     }
 
     default: {

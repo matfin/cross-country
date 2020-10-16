@@ -17,11 +17,11 @@ describe('Planner tests', (): void => {
   const defaultProps = {
     route: null,
     map: null,
-    waypoints: [],
 
     addWaypoint: jest.fn(),
     deleteWaypoint: jest.fn(),
-    resetCurrentRoute: jest.fn(),
+    resetPlanner: jest.fn(),
+    saveRoute: jest.fn(),
     setCurrentRoute: jest.fn(),
     updateWaypoint: jest.fn(),
   };
@@ -41,6 +41,13 @@ describe('Planner tests', (): void => {
       marker: mockedMarker,
     },
   ];
+  const route: Route = {
+    dateCreated: new Date('1982-04-26'),
+    id: '1234',
+    slug: 'test-slug',
+    title: 'Test Route',
+    waypoints,
+  };
 
   it('renders the route title and welcome message but not the button', (): void => {
     // given
@@ -57,9 +64,8 @@ describe('Planner tests', (): void => {
     // given
     const spyDeleteWaypoint = jest.fn();
     const spyDeleteMarkerFromMap = jest.spyOn(googleServices, 'deleteMarkerFromMap');
-
     const { getAllByTestId, getByText, queryByTestId } = render(
-      <Planner {...defaultProps} deleteWaypoint={spyDeleteWaypoint} waypoints={waypoints} />,
+      <Planner {...defaultProps} deleteWaypoint={spyDeleteWaypoint} route={route} />,
     );
 
     // then
@@ -76,12 +82,12 @@ describe('Planner tests', (): void => {
     spyDeleteMarkerFromMap.mockRestore();
   });
 
-  it('renders the component and sets the current route, then reset the route on unmount', async (): Promise<void> => {
+  it('renders the component and sets the current route, then resets on unmount', async (): Promise<void> => {
     // given
     const spySetCurrentRoute = jest.fn();
-    const spyResetCurrentRoute = jest.fn();
+    const spyResetPlanner = jest.fn();
     const { unmount } = render(
-      <Planner {...defaultProps} resetCurrentRoute={spyResetCurrentRoute} setCurrentRoute={spySetCurrentRoute} />,
+      <Planner {...defaultProps} resetPlanner={spyResetPlanner} setCurrentRoute={spySetCurrentRoute} />,
     );
 
     // then
@@ -91,7 +97,7 @@ describe('Planner tests', (): void => {
     unmount();
 
     // then
-    expect(spyResetCurrentRoute).toHaveBeenCalled();
+    expect(spyResetPlanner).toHaveBeenCalled();
   });
 
   it('does not set the current route without a slug', (): void => {
@@ -111,6 +117,7 @@ describe('Planner tests', (): void => {
 
   it('calls to add a waypoint on map click', (): void => {
     // given
+    const spyAddMarkerDragEndListener = jest.spyOn(googleServices, 'addMarkerDragEndListener').mockImplementation();
     const spyUseParams = jest.spyOn(reactRouterDom, 'useParams').mockReturnValue({ slug: 'test' });
     const spyAddWaypoint = jest.fn();
 
@@ -121,10 +128,16 @@ describe('Planner tests', (): void => {
       window,
       new CustomEvent<google.maps.Marker>('map:markerAdded', { detail: mockedMarker }),
     );
-    expect(spyAddWaypoint).toHaveBeenCalledWith(mockedMarker);
+    expect(spyAddWaypoint).toHaveBeenCalledWith({
+      dateUpdated: expect.any(Date),
+      id: expect.any(String),
+      marker: mockedMarker,
+    });
+    expect(spyAddMarkerDragEndListener).toHaveBeenCalledWith(mockedMarker, expect.any(String));
 
     // cleanup
     spyUseParams.mockRestore();
+    spyAddMarkerDragEndListener.mockRestore();
   });
 
   it('calls to update a waypoint', (): void => {
@@ -154,9 +167,9 @@ describe('Planner tests', (): void => {
 
   it('calls to download a GPX file on download button click', (): void => {
     // given
-    const spyDownloadGPX = jest.spyOn(gpx, 'downloadGPX');
+    const spyDownloadGPX = jest.spyOn(gpx, 'downloadGPX').mockImplementation();
     const spyUseParams = jest.spyOn(reactRouterDom, 'useParams').mockReturnValue({ slug: 'test' });
-    const { getByTestId } = render(<Planner {...defaultProps} waypoints={waypoints} />);
+    const { getByTestId } = render(<Planner {...defaultProps} route={route} />);
 
     // then
     fireEvent.click(getByTestId('button'));
