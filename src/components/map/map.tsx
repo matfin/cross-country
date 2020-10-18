@@ -1,6 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Waypoint } from 'models';
-import { addEventListeners, initMap, initPolyline, loadGoogleMapsApi, waypointsToLatLng } from 'services/googlemaps';
+import {
+  addMarkerToMap,
+  addEventListeners,
+  initMap,
+  initPolyline,
+  loadGoogleMapsApi,
+  waypointsToLatLng,
+} from 'services/googlemaps';
 import { Container } from './map.css';
 
 export interface Props {
@@ -35,6 +42,7 @@ const Map = ({
 
     if (apiLoaded && mapRef.current) {
       const map: google.maps.Map<HTMLDivElement> = initMap(mapRef.current);
+
       setMap(map);
     }
   }, [apiLoaded, mapRef]);
@@ -47,9 +55,13 @@ const Map = ({
 
   useEffect((): void => {
     if (map && waypoints.length) {
-      // get the new coords and set up a new polyline
+      // grab the markers and coordinates
+      const markers: google.maps.Marker[] = waypoints.map(({ marker }: Waypoint) => marker);
       const coords: google.maps.LatLng[] = waypointsToLatLng(waypoints);
       const newPolyLine = initPolyline(coords);
+
+      // add the markers to the map
+      markers.forEach((marker: google.maps.Marker): void => addMarkerToMap(marker, map));
 
       // if we have an existing polyline, nuke it
       if (polyLine) {

@@ -25,18 +25,15 @@ export interface Route {
 }
 
 export interface ReduxAction {
-  error?: Error;
-  payload?: unknown;
+  payload?: any;
   type: string;
 }
 
 export interface PlannerState {
-  waypoints: Waypoint[];
+  route: Route | null;
 }
 
 export interface RoutesState {
-  currentRoute: Route | null;
-  error: Error;
   newRouteTitle: string;
   pending: boolean;
   routes: Route[];

@@ -49,19 +49,13 @@ export const dispatchEventMarkerCoordinateUpdated = (coordinate: google.maps.Lat
   window.dispatchEvent(markerUpdatedEvent);
 };
 
-export const addMarkerToMap = ({ latLng }: google.maps.MouseEvent, map: google.maps.Map): google.maps.Marker => {
-  const { lat, lng } = latLng;
-  const position: MapPosition = {
-    lat: lat(),
-    lng: lng(),
-  };
+export const addMarkerToMap = (marker: google.maps.Marker, map: google.maps.Map): void => marker.setMap(map);
 
-  return new google.maps.Marker({
+export const createMarker = ({ latLng }: google.maps.MouseEvent): google.maps.Marker =>
+  new google.maps.Marker({
     draggable: true,
-    position,
-    map,
+    position: latLng,
   });
-};
 
 export const waypointsToLatLng = (waypoints: Waypoint[]): google.maps.LatLng[] => {
   const markers: google.maps.Marker[] = waypoints.map(({ marker }: Waypoint): google.maps.Marker => marker);
@@ -90,7 +84,7 @@ export const addMarkerDragEndListener = (marker: google.maps.Marker, uuid: strin
 
 export const addEventListeners = (map: google.maps.Map<HTMLDivElement>): void => {
   map.addListener('click', (e: google.maps.MouseEvent): void => {
-    const marker = addMarkerToMap(e, map);
+    const marker = createMarker(e);
 
     dispatchEventMarkerAdded(marker);
   });

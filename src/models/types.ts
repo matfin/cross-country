@@ -1,6 +1,6 @@
 import { Action } from 'redux';
-import { ThunkAction } from 'redux-thunk';
-import { MapState, PlannerState, RoutesState } from './interfaces';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { AppState } from './interfaces';
 
 export type Colours = {
   primary: string;
@@ -24,8 +24,8 @@ export type FontWeights = {
   light: number;
 };
 
-export type JSXChildren = JSX.Element | JSX.Element[];
+export type JSXChildren = string | JSX.Element | JSX.Element[];
 
-export type AppStates = MapState | PlannerState | RoutesState;
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, unknown, Action<string>>;
 
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppStates, unknown, Action<string>>;
+export type AppDispatch = ThunkDispatch<AppState, unknown, Action<string>>;

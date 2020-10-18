@@ -1,6 +1,6 @@
 import { Route } from 'models';
 import ActionTypes from './actionTypes';
-import { addRoute, deleteRoute, setCurrentRoute, resetCurrentRoute, updateNewRouteTitle } from './actions';
+import { addRoute, deleteRoute, saveRoute, updateNewRouteTitle } from './actions';
 
 describe('routes action tests', (): void => {
   const route: Route = {
@@ -31,16 +31,10 @@ describe('routes action tests', (): void => {
     });
   });
 
-  it('sets the current route', (): void => {
-    expect(setCurrentRoute('test')).toEqual({
-      payload: 'test',
-      type: ActionTypes.SET_CURRENT_ROUTE,
-    });
-  });
-
-  it('resets the current route', (): void => {
-    expect(resetCurrentRoute()).toEqual({
-      type: ActionTypes.RESET_CURRENT_ROUTE,
+  it('saves a route', (): void => {
+    expect(saveRoute(route)).toEqual({
+      payload: route,
+      type: ActionTypes.SAVE_ROUTE,
     });
   });
 });

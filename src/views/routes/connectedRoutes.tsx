@@ -6,7 +6,6 @@ import { addRoute, deleteRoute, updateNewRouteTitle, RoutesActionTypes } from '.
 import Routes, { Props } from './routes';
 
 const mapStateToProps = (state: AppState) => ({
-  error: state.routesState.error,
   newRouteTitle: state.routesState.newRouteTitle,
   pending: state.routesState.pending,
   routes: state.routesState.routes,

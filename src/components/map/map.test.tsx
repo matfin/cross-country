@@ -10,10 +10,9 @@ describe('Map tests', (): void => {
     setMap: jest.fn(),
 
     apiLoaded: false,
-    canEdit: true,
     map: {} as google.maps.Map<HTMLDivElement>,
-    waypoints: [],
   };
+  const spyAddMarkerToMap = jest.spyOn(googleServices, 'addMarkerToMap').mockImplementation();
   const spyAddEventListeners = jest.spyOn(googleServices, 'addEventListeners').mockImplementation();
   const spyInitMap = jest.spyOn(googleServices, 'initMap').mockImplementation();
   const spyInitPolyline = jest.spyOn(googleServices, 'initPolyline').mockReturnValue({
@@ -22,6 +21,7 @@ describe('Map tests', (): void => {
   const spyLoadGoogleMapsApi = jest.spyOn(googleServices, 'loadGoogleMapsApi').mockResolvedValue({} as any);
 
   beforeEach((): void => {
+    spyAddMarkerToMap.mockClear();
     spyAddEventListeners.mockClear();
     spyLoadGoogleMapsApi.mockClear();
     spyInitMap.mockClear();
@@ -29,6 +29,7 @@ describe('Map tests', (): void => {
   });
 
   afterAll((): void => {
+    spyAddMarkerToMap.mockReset();
     spyAddEventListeners.mockReset();
     spyLoadGoogleMapsApi.mockReset();
     spyInitMap.mockReset();
@@ -43,6 +44,20 @@ describe('Map tests', (): void => {
     expect(container).toBeTruthy();
   });
 
+  it('will add event listeners if can edit is true and the map is present', (): void => {
+    // given
+    render(<Map {...defaultProps} map={null} />);
+
+    // then
+    expect(spyAddEventListeners).not.toHaveBeenCalled();
+
+    // given
+    render(<Map {...defaultProps} canEdit />);
+
+    // then
+    expect(spyAddEventListeners).toHaveBeenCalled();
+  });
+
   it('should load the google maps api only once and set up the map', async (): Promise<void> => {
     // given
     const spySetMap = jest.fn();
@@ -55,7 +70,7 @@ describe('Map tests', (): void => {
     expect(spySetMap).toHaveBeenCalled();
   });
 
-  it('should create a polyline from waypoints', (): void => {
+  it('should add markers to the map create a polyline from waypoints', (): void => {
     // given
     const spySetPolylineMap = jest.fn();
 
@@ -71,6 +86,7 @@ describe('Map tests', (): void => {
     // then
     expect(spyInitPolyline).toHaveBeenCalled();
     expect(spySetPolylineMap).toHaveBeenNthCalledWith(1, {});
+    expect(spyAddMarkerToMap).toHaveBeenCalledTimes(2);
 
     // rerender
     rerender(<Map {...defaultProps} apiLoaded waypoints={[{}, {}, {}] as Waypoint[]} />);

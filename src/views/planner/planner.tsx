@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import { MarkerUpdatedDetail, Route, Waypoint } from 'models';
 import { useMarkerAdded, useMarkerUpdated } from 'hooks/useMap';
-import { deleteMarkerFromMap } from 'services/googlemaps';
+import { addMarkerDragEndListener, deleteMarkerFromMap } from 'services/googlemaps';
 import { downloadGPX } from 'services/gpx';
 import WaypointTile from 'components/waypointTile/waypointTile';
 import { Button, Container, Heading, Map, Message, Sidebar, WaypointList } from './planner.css';
@@ -11,27 +12,30 @@ export interface Props {
   className?: string;
   map: google.maps.Map | null;
   route: Route | null;
-  waypoints: Waypoint[];
 
-  addWaypoint(marker: google.maps.Marker): void;
+  addWaypoint(waypoint: Waypoint): void;
   deleteWaypoint(waypoint: Waypoint): void;
-  resetCurrentRoute(): void;
+  resetPlanner(): void;
+  saveRoute(route: Route): void;
   setCurrentRoute(slug: string): void;
   updateWaypoint(coordinate: google.maps.LatLngLiteral, uuid: string): void;
 }
 
-const Planner = ({
+export const hasWaypoints = (route: Route | null): boolean => Boolean(route) && (route?.waypoints ?? []).length > 0;
+
+export const Planner = ({
   addWaypoint,
   className,
   deleteWaypoint,
-  resetCurrentRoute,
+  resetPlanner,
   route,
+  saveRoute,
   setCurrentRoute,
   updateWaypoint,
-  waypoints,
 }: Props): JSX.Element => {
+  const waypoints: Waypoint[] = route?.waypoints ?? [];
   const { slug } = useParams<{ slug?: string }>();
-  const hasWaypoints: boolean = waypoints.length > 0;
+
   const onClickDeleteWaypoint = (waypoint: Waypoint): void => {
     const { marker } = waypoint;
 
@@ -40,18 +44,33 @@ const Planner = ({
   };
   const onClickDownload = (): void => downloadGPX(route, waypoints);
 
-  useEffect((): (() => void) => {
+  useEffect((): void => {
     if (slug) {
       setCurrentRoute(slug);
     }
-
-    return (): void => resetCurrentRoute();
   }, [slug]);
+
+  useEffect((): void => {
+    if (route) {
+      saveRoute(route);
+    }
+  }, [route]);
+
+  useEffect((): (() => void) => {
+    return (): void => resetPlanner();
+  }, []);
 
   useMarkerAdded((e: CustomEvent<google.maps.Marker>): void => {
     const marker: google.maps.Marker = e.detail;
+    const id: string = uuidv4();
+    const waypoint: Waypoint = {
+      dateUpdated: new Date(),
+      id,
+      marker,
+    };
 
-    addWaypoint(marker);
+    addMarkerDragEndListener(marker, id);
+    addWaypoint(waypoint);
   });
 
   useMarkerUpdated((e: CustomEvent<MarkerUpdatedDetail>): void => {
@@ -64,7 +83,7 @@ const Planner = ({
     <Container className={className}>
       <Sidebar>
         <Heading>{route?.title}</Heading>
-        {!hasWaypoints ? (
+        {!hasWaypoints(route) ? (
           <Message data-testid="message">It looks like you have no waypoints. Click the map to add some!</Message>
         ) : (
           <></>
@@ -78,7 +97,7 @@ const Planner = ({
             />
           ))}
         </WaypointList>
-        {hasWaypoints ? <Button onClick={onClickDownload}>Download Route</Button> : <></>}
+        {hasWaypoints(route) ? <Button onClick={onClickDownload}>Download Route</Button> : <></>}
       </Sidebar>
       <Map canEdit={true} waypoints={waypoints} />
     </Container>
